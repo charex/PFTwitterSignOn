@@ -15,7 +15,7 @@
 #import "PFTwitterAccountSelectDialog.h"
 
 #define kUserInfoURL @"https://api.twitter.com/1.1/account/verify_credentials.json"
-#define kUserInfoParams @{@"include_entities" : [NSNumber numberWithInteger:0], @"skip_status" : [NSNumber numberWithInteger:1]}
+#define kUserInfoParams @{@"include_entities" : @"0", @"skip_status" : @"1"}
 
 @interface PFTwitterSignOn()
 
