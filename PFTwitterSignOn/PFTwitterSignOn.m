@@ -77,19 +77,27 @@ static PFTwitterSignOn *__sharedInstance;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:PF_TWITTER_SIGN_ON_LOADING_ENDED_NOTIFICATION object:nil userInfo:@{@"action" : @"selectAccount"}];
             NSArray *accounts = [accountStore accountsWithAccountType:twitterType];
-            if (error && callback) {
-                callback(nil, error);
-                return;
-            } else if (granted && accounts.count) {
-                if ([accounts count] > 1) {
+            if (granted) {
+                if ([accounts count] == 1) {
+                    [self signInWithAccount:[accounts firstObject] andCallback:callback];
+                    return;
+                }
+                else if ([accounts count] > 1){
                     // go back to the main thread before returning to a consumer
                     selectCallback(accounts,^(ACAccount *account){
                         [self signInWithAccount:account andCallback:callback];
                     });
-                    return;
-                } else if([accounts count] == 1){
-                    [self signInWithAccount:[accounts firstObject] andCallback:callback];
-                    return;
+                }
+            } else {
+                if(error && callback) {
+                    switch ([error code]) {
+                        case ACErrorAccountNotFound:
+                            break;
+                            
+                        default:
+                            callback(nil, error);
+                            break;
+                    }
                 }
             }
             // if we haven't broken out by now, sign in with the web view by default.
