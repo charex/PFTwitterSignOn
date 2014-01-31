@@ -46,10 +46,7 @@
 {
     [PFTwitterSignOn requestAuthenticationWithSelectCallback:^(NSArray *accounts, twitterAccountCallback callback){
         // Here, you can replace this view with a custom view, or store a pointer to the callback and fire it later with a twitter account.
-        NSMutableArray *accountNames = [[accounts valueForKey:@"username"] mutableCopy];
-        [accountNames enumerateObjectsUsingBlock:^(NSString *accountName, NSUInteger index, BOOL *stop){
-            [accountNames replaceObjectAtIndex:index withObject:[NSString stringWithFormat:@"@%@",accountName]];
-        }];
+        NSArray *accountNames = [accounts valueForKey:@"accountDescription"];
         [PFTwitterAccountSelectDialog showSelectDialogInView:_rootViewController.view withItems:accountNames cancelButtonTitle:@"Nevermind" confirmBlock:^(NSInteger selectedIndex){
             callback([accounts objectAtIndex:selectedIndex]);
         } cancelBlock:nil];

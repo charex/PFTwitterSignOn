@@ -52,10 +52,7 @@ static PFTwitterSignOn *__sharedInstance;
 + (void)requestAuthenticationInView:(UIView *)view andCompletion:(twitterAuthenticationCallback)callback
 {
     [self requestAuthenticationWithSelectCallback:^(NSArray *accounts, twitterAccountCallback callback){
-        NSMutableArray *accountNames = [[accounts valueForKey:@"username"] mutableCopy];
-        [accountNames enumerateObjectsUsingBlock:^(NSString *accountName, NSUInteger index, BOOL *stop){
-            [accountNames replaceObjectAtIndex:index withObject:[NSString stringWithFormat:@"@%@",accountName]];
-        }];
+        NSArray *accountNames = [accounts valueForKey:@"accountDescription"];
         [PFTwitterAccountSelectDialog showSelectDialogInView:view withItems:accountNames cancelButtonTitle:@"Cancel" confirmBlock:^(NSInteger selectedIndex){
             callback([accounts objectAtIndex:selectedIndex]);
         } cancelBlock:nil];
@@ -87,6 +84,7 @@ static PFTwitterSignOn *__sharedInstance;
                     selectCallback(accounts,^(ACAccount *account){
                         [self signInWithAccount:account andCallback:callback];
                     });
+                    return;
                 }
             } else {
                 if(error && callback) {
